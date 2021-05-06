@@ -17,9 +17,9 @@ import java.util.logging.LogManager;
 public class Util {
     public Util() {    }
 
-    static final String URL = "jdbc:mysql://127.0.0.1:3306/mysql";
-    static final String USER = "root";
-    static final String PASSWORD = "root";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/mysql";
+    private static final String USER = "root";
+    private static final String PASSWORD = "root";
 
 
     public Connection getConnection() {
@@ -34,7 +34,7 @@ public class Util {
         return connection;
     }
 
-    static SessionFactory sessionFactory;
+    private static SessionFactory sessionFactory;
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
