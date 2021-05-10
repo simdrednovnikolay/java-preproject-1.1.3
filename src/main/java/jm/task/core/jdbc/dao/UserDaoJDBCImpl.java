@@ -19,7 +19,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     }
 
-    public void createUsersTable() {
+    public void createUsersTable() throws SQLException {
         Statement statement = null;
         try {
             connection.setAutoCommit(false);
@@ -32,12 +32,14 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
                     "  PRIMARY KEY (`id`));");
             connection.commit();
         } catch (SQLException t) {
+            connection.rollback();
             t.printStackTrace();
+
         }
 
     }
 
-    public void dropUsersTable() {
+    public void dropUsersTable() throws SQLException {
         try (Statement statement = connection.createStatement()) {
             connection.setAutoCommit(false);
             statement.executeUpdate("DROP TABLE user_connect.users");
@@ -45,10 +47,11 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
         } catch (SQLException t) {
             log.info("Таблица уже удалена!");
+            connection.rollback();
         }
     }
 
-    public void saveUser(String name, String lastName, byte age) {
+    public void saveUser(String name, String lastName, byte age) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO user_connect.users" +
                 " (NAME, LASTNAME,AGE) VALUES (?,?,?) ")) {
             connection.setAutoCommit(false);
@@ -62,10 +65,11 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
         } catch (SQLException t) {
             t.printStackTrace();
+            connection.rollback();
         }
     }
 
-    public void removeUserById(long id) {
+    public void removeUserById(long id) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM user_connect.users " +
                 "WHERE ID=? ")) {
             connection.setAutoCommit(false);
@@ -75,10 +79,11 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
             connection.close();
         } catch (SQLException t) {
             t.printStackTrace();
+            connection.rollback();
         }
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws SQLException {
         List<User> allUsers = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
             connection.setAutoCommit(false);
@@ -96,6 +101,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
         } catch (SQLException t) {
             t.printStackTrace();
+            connection.rollback();
         }
         System.out.print(allUsers.toString());
         return allUsers;
@@ -107,10 +113,11 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
         try (PreparedStatement preparedStatement =
                      connection.prepareStatement("DELETE FROM user_connect.users")) {
             preparedStatement.executeUpdate();
+            connection.commit();
         } catch (SQLException t) {
             t.printStackTrace();
+            connection.rollback();
         }
-        connection.commit();
 
     }
 }

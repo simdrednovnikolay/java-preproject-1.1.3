@@ -28,6 +28,7 @@ public class UserDaoHibernateImpl implements UserDao {
                 "  PRIMARY KEY (`id`));";
         Query query = session.createSQLQuery(sql).addEntity(User.class);
         query.executeUpdate();
+
         transaction.commit();
         session.close();
 
